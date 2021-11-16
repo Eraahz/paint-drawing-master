@@ -187,16 +187,15 @@ public class DessinPanel2 extends JPanel {
 		formesGeo.remove(f);
 	}
 
-	// LORS LA SOURIS EST PRESSER
+	// LORSQUE LA SOURIS EST PRESSÉE
 
 	private class MouseHandler extends MouseAdapter {
+		
 		public void mousePressed(MouseEvent event) {
-
 			Point p = event.getPoint();
 			courant = find(p);
 			lastPointPress = p;
 			lastFormGeo = null;
-
 		}
 
 		// LORS DE CLIQUE DE LA SOURIS

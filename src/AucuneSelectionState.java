@@ -1,47 +1,53 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ConcurrentModificationException;
 
 public class AucuneSelectionState extends State {
-    DessinPanel2 dp;
-
-    AucuneSelectionState(DessinPanel2 dp) {
-        super(dp);
+	
+    AucuneSelectionState(DessinPanel2 panel) {
+        super(panel);
     }
 
 	@Override
 	public void paintComponent(Graphics g) {
-		// Nothing
+		Graphics2D g2 = (Graphics2D) g;
+		for (FormGeo f : panel.formesGeo) {
+			f.dessine(g2);
+			if (panel.courant != null) {
+				panel.lightSquares(g2, panel.courant);
+				panel.repaint();
+			}
+		}
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent event) {
 		Point p = event.getPoint();
-		if (dp.courant == null) {
-			if (dp.lastFormGeo == null) {
-				dp.lastFormGeo = new FormGeo(dp.typeDeForme);
-				dp.lastFormGeo.setCouleur(FormGeo.getCouleurCourante());
-				dp.add(dp.lastFormGeo);
+		if (panel.courant == null) {
+			if (panel.lastFormGeo == null) {
+				panel.lastFormGeo = new FormGeo(panel.typeDeForme);
+				panel.lastFormGeo.setCouleur(FormGeo.getCouleurCourante());
+				panel.add(panel.lastFormGeo);
 			}
-			dp.lastFormGeo.setFrameFromDiagonal(dp.lastPointPress, p);
+			panel.lastFormGeo.setFrameFromDiagonal(panel.lastPointPress, p);
 		} else {
-			double dx = p.getX() - dp.lastPointPress.getX();
-			double dy = p.getY() - dp.lastPointPress.getY();
+			double dx = p.getX() - panel.lastPointPress.getX();
+			double dy = p.getY() - panel.lastPointPress.getY();
 
-			if (!dp.selectedFormesGeo.contains(dp.courant)) {
-				dp.courant.moveBy(dx, dy);
-
+			if (!panel.selectedFormesGeo.contains(panel.courant)) {
+				panel.courant.moveBy(dx, dy);
 			}
 
 			// attrape l'erreur en cas ou deux object entre dans le tableau
 			// DONC "si apres une selection on selectionne lautre figure"
 			try {
 
-				for (FormGeo f : dp.selectedFormesGeo) {
+				for (FormGeo f : panel.selectedFormesGeo) {
 					f.moveBy(dx, dy);
-					if (dp.selectedFormesGeo.size() >= 0) {
-						dp.selectedFormesGeo.clear();							
+					if (panel.selectedFormesGeo.size() >= 0) {
+						panel.selectedFormesGeo.clear();							
 					}
 				}
 				/**
@@ -53,11 +59,11 @@ public class AucuneSelectionState extends State {
 				 */
 			} catch (ConcurrentModificationException e) {
 				//Toutselec = 0;
-				dp.changeState(dp.initialState);
+				panel.changeState(panel.initialState);
 			}
-			dp.lastPointPress = p;
+			panel.lastPointPress = p;
 		}
-		dp.repaint();
+		panel.repaint();
 	}
     
 }

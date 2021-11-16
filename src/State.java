@@ -2,10 +2,10 @@ import java.awt.event.MouseEvent;
 import java.awt.Graphics;
 
 public abstract class State {
-    protected DessinPanel2 dp;
+    public DessinPanel2 panel;
 
     State(DessinPanel2 dp) {
-        this.dp = dp;
+        this.panel = dp;
     }
     
     public abstract void paintComponent(Graphics g);
